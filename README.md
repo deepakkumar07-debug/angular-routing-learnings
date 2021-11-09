@@ -535,3 +535,6 @@ export class ArchiveComponent implements OnInit {
 
 <button (click)="viewAll()">View All</button>
 ```
+## Blog Exercise Complete Code
+
+[visit here for source code for blog exercise](https://github.com/deepakkumar07-debug/angular-routing-blog)
