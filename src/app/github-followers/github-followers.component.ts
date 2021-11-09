@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 // import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
 
 @Component({
   selector: 'github-followers',
@@ -23,14 +25,18 @@ export class GithubFollowersComponent implements OnInit {
       this.route.paramMap,
       this.route.queryParamMap
     ])
-    .subscribe(combined => { //combined is an array with 2 elements 1=> latest paramMap obj 2=> latest queryparamMap
+    .switchMap(combined => { // this also returns ParamMap[] subscribe also returns ParamMap[] on this case. our aim is to eliminate nested subscribe
       let id = combined[0].get('id'); // this wont work but idea is how to use
       let page = combined[1].get('page')
       
       // calling api 
       // this.service.getImaginaryPaginatedData({id:id, page:page})
-      this.service.getAll()
-      .subscribe(followers => this.followers = followers);
+      return this.service.getAll()
+      // we dont need subscribe here
+      // .subscribe(followers => this.followers = followers);
+    })
+    .subscribe(followers => { //combined is an array with 2 elements 1=> latest paramMap obj 2=> latest queryparamMap
+     this.followers = followers
     })
 
     let page = this.route.snapshot.queryParamMap.get('page')
