@@ -417,3 +417,121 @@ export class GithubFollowersComponent implements OnInit {
     // http://localhost:4400/followers?page=1&order=newest
   }
 ```
+
+# Exercise Blog Archives
+
+Simple Router Navigation Exercise
+## Creating Components
+
+    ng g c home
+
+    ng g c not-found
+
+    ng g c archive
+
+## Importing and configuring Router module
+
+1. on the top import router module
+2. register router module on imports array
+
+`app-module.ts`
+
+```ts
+import { RouterModule } from '@angular/router';
+
+ imports: [
+    BrowserModule,
+    RouterModule.forRoot([
+      { path: '', component: HomeComponent },
+      { path: 'archive/:year/:month', component: ArchiveComponent },
+      { path: '**', component: NotFoundComponent }
+    ])
+  ],
+```
+## Adding Router outlet
+Navigate to app.html
+
+`app-component.htm`
+
+```html
+<router-outlet></router-outlet>
+```
+
+## Render list of Archives on HomePage
+
+`home-component.ts`
+
+```ts
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+  archives = [
+    { year: 2017, month: 1 },
+    { year: 2017, month: 2 },
+    { year: 2017, month: 3 },
+  ];
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}
+```
+`home.html`
+```html
+
+<h1>Home Page</h1>
+<ul>
+  <li *ngFor="let archive of archives">
+    <a
+      [routerLink]="['/archive', archive.year, archive.month]"
+      >{{ archive.year + '/' + archive.month }}</a>
+  </li>
+</ul>
+```
+
+`archive.ts`
+```ts
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-archive',
+  templateUrl: './archive.component.html',
+  styleUrls: ['./archive.component.css']
+})
+export class ArchiveComponent implements OnInit {
+  year: number;
+  month: number; 
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute) { }
+
+  ngOnInit() {
+    let params = this.route.snapshot.paramMap;
+    this.year = +params.get('year');
+    this.month = +params.get('month');
+  }
+
+  viewAll() {
+    this.router.navigate(['/']);
+  }
+}
+
+```
+
+`archive.html`
+```html
+
+<h1>Archive for {{ year }} / {{ month }}</h1>
+
+<button (click)="viewAll()">View All</button>
+```
