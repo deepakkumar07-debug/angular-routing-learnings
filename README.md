@@ -393,3 +393,27 @@ export class GithubFollowersComponent implements OnInit {
   }
 }
 ```
+
+## Programmatic Navigation
+
+`githubprofile-component`
+
+```ts
+  submit() {
+    this.router.navigate(['/followers',1,2,3]) // parameters => http://localhost:4400/followers/1/2/3
+  }
+```
+
+```ts
+  submit() {
+
+    // query params
+    //  this will navigate without page refresh
+
+    this.router.navigate(['/followers'],{
+      queryParams: {page:1, order: 'newest'}
+    }) 
+    
+    // http://localhost:4400/followers?page=1&order=newest
+  }
+```
